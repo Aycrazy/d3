@@ -51,9 +51,9 @@ d3.json("small_aptc.json", function(error, data) {
   // Save JSON data as a global variable;
   dataset = data;
   // Call plot function that we will define below
-  makeScatterplot();
+  makeBarChart();
 });
-function makeScatterplot() {
+function makeBarChart() {
   // Select chart div and create an SVG element inside of it. This is where we will create our visualization.
 
   var counties = dataset.map(function(d){return d.county.replace('Census','')
@@ -72,7 +72,7 @@ function makeScatterplot() {
     .rangeRound([0,width+margin]);
     
   var yScale = d3.scaleLinear()
-    .domain([d3.max(dataset, function (d) { return d.yes_aptc; }), 
+    .domain([d3.max(dataset, function (d) { return (d.yes_aptc); }), 
             d3.min(dataset, function (d) { return d.yes_aptc; })])
     .range([0,height])
     .nice();
@@ -93,10 +93,8 @@ function makeScatterplot() {
     .style('padding_right','5px')
     .attr("y", margin/3+1)
     .attr("width", 18)
-    .attr("height", function(d,i) {;
-    return d.yes_aptc; //Bar width of 20 plus 1 for padding
-    })
-    ;//function(d,i) {
+    .attr("height",function (d) { return d.yes_aptc * (height)/1100 }); //Bar width of 20 plus 1 for padding
+    //function(d,i) {
     //return d.yes_aptc});
     //;
 
