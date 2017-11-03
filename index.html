@@ -46,19 +46,18 @@
 d3.json("small_aptc.json", function(error, data) {
   // Save JSON data as a global variable;
   dataset = data;
-  console.log(dataset)
   // Call plot function that we will define below
   makeScatterplot();
 });
 function makeScatterplot() {
   // Select chart div and create an SVG element inside of it. This is where we will create our visualization.
+  console.log(dataset);
   var svg = d3.select("#chart")
     .append('svg')
     .attr('width', width + margin*2)
     .attr('height', height + margin*2);
   // setup x scale
   var xScale = d3.scaleLinear()
-    .domain([d3.max(d3.extent(dataset, function(d) {return d.total_plan_selections; })),d3.min(d3.extent(dataset, function(d) {return d.total_plan_selections; }))])
     .range([0, width])
     .nice();
   // setup y scale
@@ -75,10 +74,12 @@ function makeScatterplot() {
     .append("rect")
     .attr("class", "bar")
     .attr("x", function(d,i) {
+    console.log(dataset.length);
+    console.log(d.county);
     return i * (width/dataset.length) ; //Bar width of 20 plus 1 for padding
     })
     .attr("y", 0)
-    .attr("width", 20)
+    .attr("width", 15)
     .attr("height", 100);
     ;
     // .append("circle")
@@ -98,7 +99,7 @@ function makeScatterplot() {
     .call(d3.axisTop(xScale));
   // Add the x
   svg.append("g")
-    .attr("transform", "translate(" + margin + "," + margin + ")")
+    .attr("transform", "translate(" + margin + "," + margin + ")", "rotate(90)")
     .call(d3.axisLeft(yScale));
   // text label for the x axis
   svg.append("text")             
