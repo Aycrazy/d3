@@ -57,14 +57,16 @@ function makeScatterplot() {
     .attr('width', width + margin*2)
     .attr('height', height + margin*2);
   // setup x scale
-  var xScale = d3.scaleLinear()
-    .range([0, width])
-    .nice();
+  var xScale = d3.scaleOrdinal()
+    .domain([dataset, function (d) { return d.county; }])
+    .range([dataset, function (d,i) {return d.i; }]);
+    //.domain([0,dataset.length])
+    //.range(['black', '#ccc', '#ccc']);
   // setup y scale
   var yScale = d3.scaleLinear()
     .domain([d3.max(dataset, function (d) { return d.yes_aptc; }), 
             d3.min(dataset, function (d) { return d.yes_aptc; })])
-    .range([height,0])
+    .range([0,height])
     .nice();
   var g = svg.append('g')
     .attr('transform', 'translate(' + margin + ',' + margin + ')');
