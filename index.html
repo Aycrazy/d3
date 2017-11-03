@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <script type="text/javascript" src="./d3/d3.min.js"></script>
+  <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
 
   <title>D3.js Intro</title>
   <style>
@@ -10,13 +11,15 @@
         text-indent: 50px;
     }
     svg {
-      background-color: #DADFFF;
+      background-color: #DADFFF;];
+      padding-bottom: 100px;
     }
-  .dot {
+  .bar {
     stroke: rgb(51, 122, 183);
     stroke-width: 1;
     fill: rgba(51, 122, 183, .5);
     opacity: .5;
+    paddint-right: 5px;
   }
   .axis path, .axis line {
     fill: none;
@@ -41,8 +44,8 @@
 
 <script>
   var margin = 50;
-  var width = 600 - margin*2;
-  var height = 450 - margin*2;
+  var width = 900 - margin*2;
+  var height = 800 - margin*3;
 
 d3.json("small_aptc.json", function(error, data) {
   // Save JSON data as a global variable;
@@ -53,8 +56,10 @@ d3.json("small_aptc.json", function(error, data) {
 function makeScatterplot() {
   // Select chart div and create an SVG element inside of it. This is where we will create our visualization.
 
-  var counties = dataset.map(function(d){return d.county;});
-  var range = dataset.length;
+  var counties = dataset.map(function(d){return d.county.replace('Census','')
+    .replace('Borough','')
+    .replace('and','')
+    .replace('Area','');});
 
 
   var svg = d3.select("#chart")
@@ -64,7 +69,7 @@ function makeScatterplot() {
   // setup x scale
   var xScale = d3.scaleBand()
     .domain(counties)
-    .rangeRound([0,width]);
+    .rangeRound([0,width+margin]);
     
   var yScale = d3.scaleLinear()
     .domain([d3.max(dataset, function (d) { return d.yes_aptc; }), 
@@ -72,12 +77,10 @@ function makeScatterplot() {
     .range([0,height])
     .nice();
   
-  //var width = 500,height = 500,padding = {left:20,right:20};
 
-  //var axis_length = width - padding.left - padding.right;
 
   var g = svg.append('g')
-    .attr('transform', 'translate(' + margin + ',' + margin + ')');
+    .attr('transform', 'translate(' + margin + ',' + margin*3.15 + ')');
   g.selectAll("rect")
     .data(dataset)
     .enter()
@@ -85,49 +88,45 @@ function makeScatterplot() {
     .attr("class", "bar")
     .attr("x", function(d,i) {
     console.log(dataset.length);
-    //console.log(d.county);
-    return i * (width/dataset.length) ; //Bar width of 20 plus 1 for padding
+    return i*1.06 * (width/dataset.length)+8; //Bar width of 20 plus 1 for padding
     })
-    .attr("y", 0)
-    .attr("width", 15)
-    .attr("height", 100);
-    ;
-    // .append("circle")
-    // .attr("class", "dot")
-    // .attr("r", 8)
-    // .attr("cx", function (d) { return xScale(d.unemployment); })
-    // .attr("cy", function (d) { return yScale(d.inflation); })
-    // .style("fill", function(d) { 
-    //   var col
-    //   if(d.year > 2000){ col = "#ec008b"} 
-    //   else { col = "#1696d2" }
-    //   return col
-    // });
-  // Add the x axis
+    .style('padding_right','5px')
+    .attr("y", margin/3+1)
+    .attr("width", 18)
+    .attr("height", function(d,i) {;
+    return d.yes_aptc; //Bar width of 20 plus 1 for padding
+    })
+    ;//function(d,i) {
+    //return d.yes_aptc});
+    //;
+
   svg.append("g")
-    .attr("transform", "translate(" + margin + "," + (0 + margin) + ")")
+    .attr("transform", "translate(" + margin + "," + (margin*3.5) + ")")
     .call(d3.axisTop(xScale))
     .selectAll("text").
-    attr("transform","rotate(90)");//.attr("transform","translate("+ (padding.left) +","+(height - 100)+")"));
-  // Add the x
+    attr("transform","rotate(90)")
+    .attr("y", margin/3-15)
+    .attr("x",-10-(margin))
+    .style("font-size",'8px');
+
   svg.append("g")
-    .attr("transform", "translate(" + margin + "," + margin + ")")
+    .attr("transform", "translate(" + margin + "," + margin*3.5 + ")")
     .call(d3.axisLeft(yScale));
   // text label for the x axis
   svg.append("text")             
     .attr("transform", "translate(" + (width/2) + " ," + (-70 + margin + 40) + ")")
-    .style("text-anchor", "middle")
+    .style("text-anchor", "right")
     .text("Total Plan Selections");
 
   svg.append("g")
     .selectAll("text")
-    .attr("transform","rotate(90)");
+    .attr("transform","rotate(90)")
   // text label for the y axis
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", margin/3)
-    .attr("x",0 - (height + margin)/2)
-    .style("text-anchor", "middle")
+    .attr("x",-0 - (height + margin))
+    .style("text-anchor", "left")
     .text("APTC");
 };
 </script>
