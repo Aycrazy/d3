@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script type="text/javascript" src="./d3/d3.min.js"></script>
+
+  <title>D3.js Intro</title>
+  <style>
+    h2 {
+        text-indent: 50px;
+    }
+    svg {
+      background-color: #DADFFF;
+    }
+  .dot {
+    stroke: rgb(51, 122, 183);
+    stroke-width: 1;
+    fill: rgba(51, 122, 183, .5);
+    opacity: .5;
+  }
+  .axis path, .axis line {
+    fill: none;
+    stroke: #ccc;
+    shape-rendering: crispEdges;
+  }
+  .axis text {
+    font-size: 11px;
+  }
+  </style>
+
+</head>
+<body>
+
+<h2>An Introduction to D3.js</h2>
+
+<div class="container">
+  <div id="chart"></div>
+</div>
+
+
+<script>
+  var margin = 50;
+  var width = 600 - margin*2;
+  var height = 450 - margin*2;
+
+d3.json("small_aptc.json", function(error, data) {
+  // Save JSON data as a global variable;
+  dataset = data;
+  console.log(dataset)
+  // Call plot function that we will define below
+  makeScatterplot();
+});
+function makeScatterplot() {
+  // Select chart div and create an SVG element inside of it. This is where we will create our visualization.
+  var svg = d3.select("#chart")
+    .append('svg')
+    .attr('width', width + margin*2)
+    .attr('height', height + margin*2);
+  // setup x scale
+  var xScale = d3.scaleLinear()
+    .domain([d3.max(d3.extent(dataset, function(d) {return d.total_plan_selections; })),d3.min(d3.extent(dataset, function(d) {return d.total_plan_selections; }))])
+    .range([0, width])
+    .nice();
+  // setup y scale
+  var yScale = d3.scaleLinear()
+    .domain([d3.max(dataset, function (d) { return d.yes_aptc; }), 
+            d3.min(dataset, function (d) { return d.yes_aptc; })])
+    .range([height,0])
+    .nice();
+  var g = svg.append('g')
+    .attr('transform', 'translate(' + margin + ',' + margin + ')');
+  g.selectAll("rect")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("x", function(d,i) {
+    return i * (width/dataset.length) ; //Bar width of 20 plus 1 for padding
+    })
+    .attr("y", 0)
+    .attr("width", 20)
+    .attr("height", 100);
+    ;
+    // .append("circle")
+    // .attr("class", "dot")
+    // .attr("r", 8)
+    // .attr("cx", function (d) { return xScale(d.unemployment); })
+    // .attr("cy", function (d) { return yScale(d.inflation); })
+    // .style("fill", function(d) { 
+    //   var col
+    //   if(d.year > 2000){ col = "#ec008b"} 
+    //   else { col = "#1696d2" }
+    //   return col
+    // });
+  // Add the x axis
+  svg.append("g")
+    .attr("transform", "translate(" + margin + "," + (0 + margin) + ")")
+    .call(d3.axisTop(xScale));
+  // Add the x
+  svg.append("g")
+    .attr("transform", "translate(" + margin + "," + margin + ")")
+    .call(d3.axisLeft(yScale));
+  // text label for the x axis
+  svg.append("text")             
+    .attr("transform", "translate(" + (width/2) + " ," + (-70 + margin + 40) + ")")
+    .style("text-anchor", "middle")
+    .text("Total Plan Selections");
+  // text label for the y axis
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", margin/3)
+    .attr("x",0 - (height + margin)/2)
+    .style("text-anchor", "middle")
+    .text("APTC");
+};
+</script>
+
+
+</body>
+</html>
