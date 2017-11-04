@@ -11,7 +11,7 @@
         text-indent: 50px;
     }
     svg {
-      background-color: #DADFFF;];
+      /*background-color: #DADFFF;];*/
       padding-bottom: 100px;
     }
   .bar {
@@ -19,7 +19,6 @@
     stroke-width: 1;
     fill: rgba(51, 122, 183, .5);
     opacity: .5;
-    paddint-right: 5px;
   }
   .axis path, .axis line {
     fill: none;
@@ -45,12 +44,13 @@
 <script>
   var margin = 50;
   var width = 900 - margin*2;
-  var height = 800 - margin*3;
+  var height = 700 - margin*3;
 
 d3.json("small_aptc.json", function(error, data) {
   // Save JSON data as a global variable;
-  dataset = data;
+  dataset =data;
   // Call plot function that we will define below
+  dataset = dataset.sort(function(a, b) { return b.yes_aptc - a.yes_aptc; })
   makeBarChart();
 });
 function makeBarChart() {
@@ -72,9 +72,9 @@ function makeBarChart() {
     .rangeRound([0,width+margin]);
     
   var yScale = d3.scaleLinear()
-    .domain([d3.max(dataset, function (d) { return (d.yes_aptc); }), 
-            d3.min(dataset, function (d) { return d.yes_aptc; })])
-    .range([0,height])
+    .domain([d3.min(dataset, function (d) { return d.yes_aptc; }),
+            d3.max(dataset, function (d) { return d.yes_aptc; })])
+    .range([height,0])
     .nice();
   
 
@@ -90,7 +90,6 @@ function makeBarChart() {
     console.log(dataset.length);
     return i*1.06 * (width/dataset.length)+8; //Bar width of 20 plus 1 for padding
     })
-    .style('padding_right','5px')
     .attr("y", margin/3+1)
     .attr("width", 18)
     .attr("height",function (d) { return d.yes_aptc * (height)/1100 }); //Bar width of 20 plus 1 for padding
@@ -124,7 +123,7 @@ function makeBarChart() {
     .attr("transform", "rotate(-90)")
     .attr("y", margin/3)
     .attr("x",-0 - (height + margin))
-    .style("text-anchor", "left")
+    .style("text-anchor", "right")
     .text("APTC");
 };
 </script>
