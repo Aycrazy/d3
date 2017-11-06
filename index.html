@@ -71,7 +71,7 @@ function makeBarChart() {
     .replace('and','')
     .replace('Area','');});
 
-  var tooltip = d3.select('chart')
+  var tooltip = d3.select('#chart')
     .append('div')
     .style('position','absolute')
     .style('padding','0 10px')
@@ -103,11 +103,10 @@ function makeBarChart() {
     .data(dataset)
     .enter()
     .append("rect")
-    .attr("class", "bar")
     .attr("x", function(d,i) {
-    console.log(dataset.length);
-    return i*1.06 * (width/dataset.length)+barOffset; //Bar width of 20 plus 1 for padding;
+    return i*1.06 * (width/dataset.length) +.9 ; //Bar width of 20 plus 1 for padding;
     })
+    .attr("class", "bar")
     .attr("y", margin/3+1)
     .attr("width", function(d) {
     return xScale.bandwidth(); //Bar width of 20 plus 1 for padding;
@@ -118,9 +117,12 @@ function makeBarChart() {
       tooltip.transition().duration(200)
         .style('opacity', .9)
 
-      tooltip.html(d)
-      .style('left', (d3.event.pageX ) + 'px')
-      .style('top', (d3.event.pagey ) + 'px')
+      tooltip.html(d.yes_aptc)
+      .style('width', 5)
+      .style('left', (d3.event.pageX - 20) + 'px')
+      .style('bottom', (d3.event.pagey - 10) + 'px')
+      .style('x', d.yes_aptc)
+
 
       tempColor = this.style.fill;
 
