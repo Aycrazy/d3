@@ -58,9 +58,9 @@
 
   var rowConverter = function(d) {
       return { county_fips_code: d.county_fips_code,
-      county: parseInt(d.county),
-      no_aptc: parseInt(d.no_aptc),
-      yes_aptc: parseInt(d.yes_aptc),
+      county: +d.county,
+      no_aptc: + d.no_aptc,
+      yes_aptc: +d.yes_aptc,
       total_plan_selections: parseInt(d.total_plan_selections)
     }};
 
@@ -86,10 +86,7 @@ d3.json("small_aptc.json", function(error, data) {
 function makeBarChart() {
   // Select chart div and create an SVG element inside of it. This is where we will create our visualization.
 
-  var counties = dataset.map(function(d){return d.county.replace('Census','')
-    .replace('Borough','')
-    .replace('and','')
-    .replace('Area','');});
+  var counties = dataset.map(function(d){return d.county;});
 
   var tooltip = d3.select('#chart')
     .append('div')
@@ -103,10 +100,16 @@ function makeBarChart() {
     .attr('width', width + margin*2)
     .attr('height', height + margin*2);
   // setup x scale
+
   var xScale = d3.scaleBand()
     .domain(counties)
     .padding(.2)
     .rangeRound([0,width+margin]);
+
+  // var xScale = d3.scaleOrdinal()
+  //   .domain(counties)
+  //   .padding(.2)
+  //   .rangeRound([0,width+margin]);
     
   var yScale = d3.scaleLinear()
     .domain([d3.max(dataset, function (d) { return d.yes_aptc; }),
@@ -125,7 +128,7 @@ function makeBarChart() {
     .enter()
     .append("rect")
     .attr("x", function(d,i) {
-    return i*1.06 * (width/dataset.length) +.9 ; //Bar width of 20 plus 1 for padding;
+    return xScale(d.county) ; //Bar width of 20 plus 1 for padding;
     })
     .attr("class", "bar")
     .attr("y", margin/3+1)
@@ -168,7 +171,8 @@ function makeBarChart() {
                 return d.yes_aptc;
             })
     .attr("x", function(d,i){
-      return i*1.06 * (width/dataset.length) +.9 ;})
+      return xScale(d.county);})
+      // return i*1.06 * (width/dataset.length) +.9 ;})
     .attr("y", function(d,i){
       return  yScale(d.yes_aptc)+margin; });
 
