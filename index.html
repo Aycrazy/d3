@@ -51,17 +51,37 @@
 <script>
   var margin = 50,
   width = 900 - margin*2,
-   height = 700 - margin*3,
+   height = 500 - margin*3,
    labelWidth = 0,
    barOffset = 8,
    barWidth = 18;
 
+  var rowConverter = function(d) {
+      return { county_fips_code: d.county_fips_code,
+      county: parseInt(d.county),
+      no_aptc: parseInt(d.no_aptc),
+      yes_aptc: parseInt(d.yes_aptc),
+      total_plan_selections: parseInt(d.total_plan_selections)
+    }};
+
 d3.json("small_aptc.json", function(error, data) {
   // Save JSON data as a global variable;
-  dataset =data;
-  // Call plot function that we will define below
-  dataset = dataset.sort(function(a, b) { return b.yes_aptc - a.yes_aptc; })
-  makeBarChart();
+  
+  if(error) {
+    console.log(error);
+  }
+  else{
+
+    
+    // Call plot function that we will define below
+    //dataset = rowConverter(data.sort(function(a, b) { return b.yes_aptc - a.yes_aptc; }))
+    dataset = data.sort(function(a, b) { return b.yes_aptc - a.yes_aptc; })
+
+      console.log(dataset);
+
+      console.log(rowConverter(dataset));
+
+    makeBarChart();}
 });
 function makeBarChart() {
   // Select chart div and create an SVG element inside of it. This is where we will create our visualization.
@@ -91,7 +111,7 @@ function makeBarChart() {
   var yScale = d3.scaleLinear()
     .domain([d3.max(dataset, function (d) { return d.yes_aptc; }),
       d3.min(dataset, function(d){ return d.yes_aptc ;})])
-    .range([0,height])
+    .range([height,0])
     .nice();
 
   
@@ -112,17 +132,18 @@ function makeBarChart() {
     .attr("width", function(d) {
     return xScale.bandwidth(); //Bar width of 20 plus 1 for padding;
     })
-    .attr("height",function (d) { return d.yes_aptc+ 'px'; })
+    .attr("height",function (d) { return yScale(d.yes_aptc) ; })
     .on('mouseover', function(d){
 
       tooltip.transition().duration(200)
         .style('opacity', .9)
 
-      tooltip.html(d.yes_aptc)
-      .style('width', 5)
-      .style('left', (d3.event.pageX - 20) + 'px')
-      .style('bottom', (d3.event.pagey - 10) + 'px')
-      .style('x', d.yes_aptc)
+      // tooltip.html(d.yes_aptc)
+      // .style('width', 5)
+      // .style('left', (d3.event.pageX - 20) + 'px')
+      // .style('bottom', (d3.event.pagey - 10) + 'px')
+      // .attr('x', d.yes_aptc)
+      // .attr('y', height )
 
 
       tempColor = this.style.fill;
@@ -144,12 +165,12 @@ function makeBarChart() {
     .enter()
     .append("text")
     .text(function(d){
-                return yScale(d.yes_aptc);
+                return d.yes_aptc;
             })
     .attr("x", function(d,i){
       return i*1.06 * (width/dataset.length) +.9 ;})
     .attr("y", function(d,i){
-      return  d.yes_aptc; });
+      return  yScale(d.yes_aptc)+margin; });
 
     // .each(function() {
     //     labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
@@ -167,9 +188,10 @@ function makeBarChart() {
 
   //yticks
   svg.append("g")
+    .data(dataset)
     .attr("transform", "translate(" + margin + "," + margin*3.5 + ")")
-    .call(d3.axisLeft(yScale))
-    .tickValues();
+    .call(d3.axisLeft(yScale));
+
   // text label for the x axis
   svg.append("text")             
     .attr("transform", "translate(" + (width/2) + " ," + (-70 + margin + 40) + ")")
