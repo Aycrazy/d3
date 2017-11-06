@@ -50,23 +50,33 @@
 
 <script>
   var margin = 50,
+  // var margin = {top:100, right: 75, bottom: 125, left: 50},
   width = 900 - margin*2,
    height = 500 - margin*3,
    labelWidth = 0,
    barOffset = 8,
    barWidth = 18;
 
-  var rowConverter = function(d) {
+  function rowConverter (d) {
       return { county_fips_code: d.county_fips_code,
-      county: +d.county,
-      no_aptc: + d.no_aptc,
-      yes_aptc: +d.yes_aptc,
-      total_plan_selections: parseInt(d.total_plan_selections)
-    }};
+      county: d.county,
+      no_aptc:  d.no_aptc,
+      yes_aptc: d.yes_aptc,
+      total_plan_selections: d.total_plan_selections
+    };}
 
 d3.json("small_aptc.json", function(error, data) {
   // Save JSON data as a global variable;
-  
+
+  // d3.csv("small_aptc.json", function(data) {
+  //         return { county_fips_code: data.county_fips_code,
+  //     county: data.county,
+  //     no_aptc:  data.no_aptc,
+  //     yes_aptc: data.yes_aptc,
+  //     total_plan_selections: data.total_plan_selections
+  //   };
+  //       });
+
   if(error) {
     console.log(error);
   }
@@ -75,11 +85,13 @@ d3.json("small_aptc.json", function(error, data) {
     
     // Call plot function that we will define below
     //dataset = rowConverter(data.sort(function(a, b) { return b.yes_aptc - a.yes_aptc; }))
+    console.log(data);
+
     dataset = data.sort(function(a, b) { return b.yes_aptc - a.yes_aptc; })
 
-      console.log(dataset);
+      
 
-      console.log(rowConverter(dataset));
+      
 
     makeBarChart();}
 });
@@ -198,14 +210,14 @@ function makeBarChart() {
 
   // text label for the x axis
   svg.append("text")             
-    .attr("transform", "translate(" + (width/2) + " ," + (-70 + margin + 40) + ")")
+    .attr("transform", "translate(" + (width/2) + " ," + (-50 + margin + 40) + ")")
     .style("text-anchor", "right")
-    .text("Total Plan Selections");
+    .text("Counties");
 
   // text label for the y axis
   svg.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", margin/3)
+    .attr("y", margin/3 - 5)
     .attr("x",-0 - (height + margin))
     .style("text-anchor", "right")
     .text("APTC");
