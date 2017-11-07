@@ -12,8 +12,8 @@ for idx,row in enumerate(reader):
 	if idx ==0:
 		continue
 	if ct < 30:
-		if row['yes_aptc'] not in ['NaN','.'] and row['total_plan_selections'] not in ['NaN','.']\
-		and row['county'] not in ['NaN','.'] :
+		if row['state_name'] in ['WI'] and row['yes_aptc'] not in ['NaN','.'] and row['total_plan_selections'] not in ['NaN','.']\
+		and row['county'] not in ['NaN','.'] and 'e' not in row['total_plan_selections'] :
 			row["county"] = row["county"].replace("Borough","")\
 			.replace("Area","").replace("Census","")
 			row["no_aptc"] = int(row["no_aptc"])

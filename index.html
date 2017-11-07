@@ -50,7 +50,7 @@
 
 <script>
   var margin = 50,
-  // var margin = {top:100, right: 75, bottom: 125, left: 50},
+  //var margin = {top:150, right: 75, bottom: 125, left: 50},
   width = 900 - margin*2,
    height = 500 - margin*3,
    labelWidth = 0,
@@ -147,6 +147,13 @@ function makeBarChart() {
     .attr("width", function(d) {
     return xScale.bandwidth(); //Bar width of 20 plus 1 for padding;
     })
+    .style("fill", function(d) { 
+      var col
+      console.log(d.yes_aptc/d.total_plan_selections);
+      if(d.yes_aptc/d.total_plan_selections < .85 ){ col = "#d27306"} 
+      else { col = "#1696d2" }
+      return col
+    })
     .attr("height",function (d) { return yScale(d.yes_aptc) ; })
     .on('mouseover', function(d){
 
@@ -192,6 +199,43 @@ function makeBarChart() {
     //     labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
     // });
 
+svg.append('text')
+    .attr('x', margin*14)
+    .attr('y', margin*7)
+    .text(' < 85 % aptc of total plans')
+    .append('text')
+
+  svg.append('rect')
+    .attr('x', margin*17)
+    .attr('y', margin*7.5)
+    .attr('height', '40px')
+    .attr('width', '22px')
+    .style('fill', "#1696d2")
+    .style('opacity',.5)
+    .append('rect')
+
+  
+
+  svg.append('text')
+    .attr('x', margin*14)
+    .attr('y', margin*8)
+    .text(' >= 85 % aptc of total plans')
+    .append('text')
+
+    svg.append('rect')
+  .attr('x', margin*17)
+  .attr('y', margin*6.5)
+  .attr('height', '40px')
+  .attr('width', '22px')
+  .style('fill', '#d27306')
+  .style('opacity',.5)
+  .append('rect')
+
+  
+
+
+  
+    
 //xticks
   svg.append("g")
     .attr("transform", "translate(" + margin + "," + (margin*3.5) + ")")
@@ -210,7 +254,7 @@ function makeBarChart() {
 
   // text label for the x axis
   svg.append("text")             
-    .attr("transform", "translate(" + (width/2) + " ," + (-50 + margin + 40) + ")")
+    .attr("transform", "translate(" + (width/2) + " ," + (-35 + margin + 40) + ")")
     .style("text-anchor", "right")
     .text("Counties");
 
@@ -218,7 +262,7 @@ function makeBarChart() {
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", margin/3 - 5)
-    .attr("x",-0 - (height + margin))
+    .attr("x", - (height + margin))
     .style("text-anchor", "right")
     .text("APTC");
 
