@@ -51,7 +51,7 @@
 <script>
   var margin = 50,
   //var margin = {top:150, right: 75, bottom: 125, left: 50},
-  width = 900 - margin*2,
+  width = 800 - margin*2,
    height = 500 - margin*3,
    labelWidth = 0,
    barOffset = 8,
@@ -116,7 +116,7 @@ function makeBarChart() {
   var xScale = d3.scaleBand()
     .domain(counties)
     .padding(.2)
-    .rangeRound([0,width+margin]);
+    .rangeRound([0,width]);
 
   // var xScale = d3.scaleOrdinal()
   //   .domain(counties)
@@ -133,7 +133,7 @@ function makeBarChart() {
 
 
   var g = svg.append('g')
-    .attr('transform', 'translate(' + margin + ',' + margin*3.15 + ')');
+    .attr('transform', 'translate(' + margin*1.5 + ',' + margin*3.15 + ')');
   
   g.selectAll("rect")
     .data(dataset)
@@ -200,33 +200,33 @@ function makeBarChart() {
     // });
 
 svg.append('text')
-    .attr('x', margin*14)
+    .attr('x', margin*10)
     .attr('y', margin*7)
-    .text(' < 85 % aptc of total plans')
+    .text(' < 85 % APTC of total plans')
     .append('text')
 
   svg.append('rect')
-    .attr('x', margin*17)
+    .attr('x', margin*13)
     .attr('y', margin*7.5)
     .attr('height', '40px')
-    .attr('width', '22px')
+    .attr('width', '18px')
     .style('fill', "#1696d2")
     .style('opacity',.5)
     .append('rect')
 
-  
+
 
   svg.append('text')
-    .attr('x', margin*14)
+    .attr('x', margin*10)
     .attr('y', margin*8)
-    .text(' >= 85 % aptc of total plans')
+    .text(' >= 85 % APTC of total plans')
     .append('text')
 
     svg.append('rect')
-  .attr('x', margin*17)
+  .attr('x', margin*13)
   .attr('y', margin*6.5)
   .attr('height', '40px')
-  .attr('width', '22px')
+  .attr('width', '18px')
   .style('fill', '#d27306')
   .style('opacity',.5)
   .append('rect')
@@ -238,7 +238,7 @@ svg.append('text')
     
 //xticks
   svg.append("g")
-    .attr("transform", "translate(" + margin + "," + (margin*3.5) + ")")
+    .attr("transform", "translate(" + margin*1.5 + "," + (margin*3.5) + ")")
     .call(d3.axisTop(xScale))
     .selectAll("text").
     attr("transform","rotate(90)")
@@ -249,12 +249,12 @@ svg.append('text')
   //yticks
   svg.append("g")
     .data(dataset)
-    .attr("transform", "translate(" + margin + "," + margin*3.5 + ")")
+    .attr("transform", "translate(" + margin*1.5 + "," + margin*3.5 + ")")
     .call(d3.axisLeft(yScale));
 
   // text label for the x axis
   svg.append("text")             
-    .attr("transform", "translate(" + (width/2) + " ," + (-35 + margin + 40) + ")")
+    .attr("transform", "translate(" + (width/2) + " ," + (-30 + margin + 40) + ")")
     .style("text-anchor", "right")
     .text("Counties");
 
@@ -264,7 +264,7 @@ svg.append('text')
     .attr("y", margin/3 - 5)
     .attr("x", - (height + margin))
     .style("text-anchor", "right")
-    .text("APTC");
+    .text("Advanced Premium Tax Credit (APTC)");
 
 
   
