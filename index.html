@@ -5,7 +5,7 @@
   <script type="text/javascript" src="./d3/d3.min.js"></script>
   <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
 
-  <title>D3.js Intro</title>
+  <title>Intro to D3.js Assignment</title>
   <style>
     h2 {
         text-indent: 50px;
@@ -200,6 +200,13 @@ function makeBarChart() {
     // });
 
 svg.append('text')
+    .attr("transform", "translate(" + margin*2 + " ," + ( margin ) + ")")
+    .text("Advanced Premium Tax Credit Counts by County in Wisconsin")
+    .style('font-size','14')
+    .style('font-weight', 'bold')
+    .append('text')
+
+svg.append('text')
     .attr('x', margin*10)
     .attr('y', margin*7)
     .text(' < 85 % APTC of total plans')
@@ -254,8 +261,8 @@ svg.append('text')
 
   // text label for the x axis
   svg.append("text")             
-    .attr("transform", "translate(" + (width/2) + " ," + (-30 + margin + 40) + ")")
-    .style("text-anchor", "right")
+    .attr("transform", "translate(" + ((width+margin*2)/2) + " ," + (20 + margin ) + ")")
+    // .style("text-anchor", "right")
     .text("Counties");
 
   // text label for the y axis
