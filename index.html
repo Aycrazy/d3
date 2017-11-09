@@ -5,14 +5,17 @@
   <script type="text/javascript" src="./d3/d3.min.js"></script>
   <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
 
-  <title>Intro to D3.js Assignment</title>
+  <title  >Intro to D3.js Assignment</title>
   <style>
     h2 {
         text-indent: 50px;
+        color: black;
+        font-family: 'Saira';
+    }
+
     }
     svg {
-      /*background-color: #DADFFF;];*/
-      padding-bottom: 100px;
+
     }
   .bar {
     stroke: rgb(51, 122, 183);
@@ -25,37 +28,53 @@
     stroke: #ccc;
     shape-rendering: crispEdges;
   }
-  .axis text {
+
+  text {
+        color: black;
+        font-family: 'Saira';
+    }
+
+
+  .axis_text {
+    font-size: 13px;
+    font-weight: 'bold';
+  }
+
+  .ticks_text{
+    font-size: 9px;
+  }
+
+  .label_text {
+    font-size: 9px;
+  }
+
+  .legend_text {
     font-size: 11px;
   }
 
-  text {
-        font: 10px sans-serif;
-        color: black;
-    }
-
+  
   </style>
 
 </head>
 <body>
 
-<h2>An Introduction to D3.js</h2>
+<h2 >An Introduction to D3.js</h2>
 
 <div class="container">
   <div id="chart">
-    <!-- <text>test</text> -->
+
   </div>
 </div>
 
 
 <script>
   var margin = 50,
-  //var margin = {top:150, right: 75, bottom: 125, left: 50},
+
   width = 800 - margin*2,
-   height = 500 - margin*3,
-   labelWidth = 0,
-   barOffset = 8,
-   barWidth = 18;
+  height = 600 - margin*3,
+  labelWidth = 0,
+  barOffset = 8,
+  barWidth = 18;
 
   function rowConverter (d) {
       return { county_fips_code: d.county_fips_code,
@@ -68,14 +87,14 @@
 d3.json("small_aptc.json", function(error, data) {
   // Save JSON data as a global variable;
 
-  // d3.csv("small_aptc.json", function(data) {
-  //         return { county_fips_code: data.county_fips_code,
-  //     county: data.county,
-  //     no_aptc:  data.no_aptc,
-  //     yes_aptc: data.yes_aptc,
-  //     total_plan_selections: data.total_plan_selections
-  //   };
-  //       });
+  d3.csv("small_aptc.json", function(data) {
+          return { county_fips_code: data.county_fips_code,
+      county: data.county,
+      no_aptc:  data.no_aptc,
+      yes_aptc: data.yes_aptc,
+      total_plan_selections: data.total_plan_selections
+    };
+        });
 
   if(error) {
     console.log(error);
@@ -118,15 +137,11 @@ function makeBarChart() {
     .padding(.2)
     .rangeRound([0,width]);
 
-  // var xScale = d3.scaleOrdinal()
-  //   .domain(counties)
-  //   .padding(.2)
-  //   .rangeRound([0,width+margin]);
-    
+
   var yScale = d3.scaleLinear()
     .domain([d3.max(dataset, function (d) { return d.yes_aptc; }),
       d3.min(dataset, function(d){ return d.yes_aptc ;})])
-    .range([height,0])
+    .range([height-margin*1.2,0])
     .nice();
 
   
@@ -160,13 +175,6 @@ function makeBarChart() {
       tooltip.transition().duration(200)
         .style('opacity', .9)
 
-      // tooltip.html(d.yes_aptc)
-      // .style('width', 5)
-      // .style('left', (d3.event.pageX - 20) + 'px')
-      // .style('bottom', (d3.event.pagey - 10) + 'px')
-      // .attr('x', d.yes_aptc)
-      // .attr('y', height )
-
 
       tempColor = this.style.fill;
 
@@ -186,34 +194,38 @@ function makeBarChart() {
     .data(dataset)
     .enter()
     .append("text")
+    .attr("class","label_text")
     .text(function(d){
                 return d.yes_aptc;
             })
     .attr("x", function(d,i){
       return xScale(d.county);})
-      // return i*1.06 * (width/dataset.length) +.9 ;})
     .attr("y", function(d,i){
-      return  yScale(d.yes_aptc)+margin; });
-
-    // .each(function() {
-    //     labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
-    // });
+      return  yScale(d.yes_aptc)+margin/2; });
 
 svg.append('text')
-    .attr("transform", "translate(" + margin*2 + " ," + ( margin ) + ")")
-    .text("Advanced Premium Tax Credit Counts by County in Wisconsin")
-    .style('font-size','14')
+    .attr("transform", "translate(" + margin + " ," + ( margin/2 ) + ")")
+    .text("Advanced Premium Tax Credit (APTC) Counts by County in Wisconsin")
+    .style('font-size','16')
     .style('font-weight', 'bold')
     .append('text')
 
+
 svg.append('text')
-    .attr('x', margin*10)
+    .attr("transform", "translate(" + margin + " ," + ( margin ) + ")")
+    .text("Color indicates surpassing a threshold of plans with APTC in comparison to the total number of marketplace plans")
+    .style('font-size','11')
+    .append('text')
+
+svg.append('text')
+    .attr('x', margin*12)
     .attr('y', margin*7)
+    .attr("class","label_text")
     .text(' < 85 % APTC of total plans')
     .append('text')
 
-  svg.append('rect')
-    .attr('x', margin*13)
+svg.append('rect')
+    .attr('x', margin*15)
     .attr('y', margin*7.5)
     .attr('height', '40px')
     .attr('width', '18px')
@@ -222,15 +234,15 @@ svg.append('text')
     .append('rect')
 
 
-
-  svg.append('text')
-    .attr('x', margin*10)
+svg.append('text')
+    .attr('x', margin*12)
     .attr('y', margin*8)
+    .attr("class","label_text")
     .text(' >= 85 % APTC of total plans')
     .append('text')
 
-    svg.append('rect')
-  .attr('x', margin*13)
+svg.append('rect')
+  .attr('x', margin*15)
   .attr('y', margin*6.5)
   .attr('height', '40px')
   .attr('width', '18px')
@@ -239,7 +251,12 @@ svg.append('text')
   .append('rect')
 
   
-
+svg.append('text')
+    .attr('x', margin*12)
+    .attr('y', margin*10)
+    .style("font-size",'12px')
+    .text('Source: CMS Public Use Files')
+    .append('text')
 
   
     
@@ -250,29 +267,31 @@ svg.append('text')
     .selectAll("text").
     attr("transform","rotate(90)")
     .attr("y", margin/3-15)
-    .attr("x",-10-(margin))
-    .style("font-size",'8px');
+    .attr("x",-5-(margin))
+    .attr("class","ticks_text");
 
   //yticks
   svg.append("g")
     .data(dataset)
     .attr("transform", "translate(" + margin*1.5 + "," + margin*3.5 + ")")
-    .call(d3.axisLeft(yScale));
+    .call(d3.axisLeft(yScale))
+    .attr("class","ticks_text");
 
   // text label for the x axis
   svg.append("text")             
     .attr("transform", "translate(" + ((width+margin*2)/2) + " ," + (20 + margin ) + ")")
-    // .style("text-anchor", "right")
-    .text("Counties");
+    .attr('class','axis_text')
+    .text("Counties")
+    ;
 
   // text label for the y axis
   svg.append("text")
+    .attr("class","axis_text")
     .attr("transform", "rotate(-90)")
     .attr("y", margin/3 - 5)
     .attr("x", - (height + margin))
     .style("text-anchor", "right")
     .text("Advanced Premium Tax Credit (APTC)");
-
 
   
 };
